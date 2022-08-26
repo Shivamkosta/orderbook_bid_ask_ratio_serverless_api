@@ -1,0 +1,31 @@
+service: ORDERBOOK-BID-ASK-RATIO-API-SERVERLESS
+
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  runtime: python3.8
+  region: us-east-2
+  iam:
+  role: arn:aws:iam::472882047557:role/LambdaExecutionRole
+
+functions:
+  API:
+    handler: src/orderBook_handler.getOrderBook
+    vpc:
+      securityGroupIds:
+        - sg-0c2422978cc28bca9
+      subnetIds:
+        - subnet-010bf6e12fcf7e072
+        - subnet-0eede326d330f472e
+    environment:
+      PYTHONPATH: /opt/python
+    layers:
+      - "arn:aws:lambda:us-east-2:472882047557:layer:API-SERVERLESS-LAYERS:12"
+    timeout: 10
+    events:
+      - http:
+          path: /orderbook
+          method: get
+          cors: true
+
